@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Repository;
+
+use App\Entity\User;
+use App\Entity\Invoice;
+use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+
+/**
+ * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Invoice|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Invoice[]    findAll()
+ * @method Invoice[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ */
+class InvoiceRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Invoice::class);
+    }
+
+    public function getNextInvoiceChronoOfUser(User $user){
+        return $this->createQueryBuilder("i")
+                    ->select("i.Chrono")
+                    ->join("i.customer" , "c")
+                    ->where( "c.user = :uhttps://github.com/BabyReggae/tutoApiPlatform.gitser" )
+                    ->setParameter( "user" , $user )
+                    ->orderBy( "i.Chrono" , "DESC")
+                    ->setMaxResults(1)
+                    ->getQuery()
+                    ->getSingleScalarResult() + 1;
+    }
+
+    // /**
+    //  * @return Invoice[] Returns an array of Invoice objects
+    //  */
+    /*
+    public function findByExampleField($value)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.exampleField = :val')
+            ->setParameter('val', $value)
+            ->orderBy('i.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+    */
+
+    /*
+    public function findOneBySomeField($value): ?Invoice
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.exampleField = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
+    */
+}
